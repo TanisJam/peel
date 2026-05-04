@@ -1,0 +1,28 @@
+{
+  "name": "@tanisjam/peel",
+  "version": "0.0.1",
+  "description": "Ephemeral git worktrees with auto-managed dev servers. Work in progress.",
+  "type": "module",
+  "bin": {
+    "peel": "./bin/peel.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "author": "tanisjam <tanisjames@gmail.com>",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "cli",
+    "git",
+    "worktree",
+    "dev-server",
+    "branch",
+    "qa"
+  ]
+}
