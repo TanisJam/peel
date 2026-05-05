@@ -33,7 +33,31 @@ The wizard auto-detects:
 
 The output `.peel.yml` is **minimal**: only fields that differ from the canonical defaults are written. Two runs over the same answers produce byte-identical files.
 
-Other subcommands (`run`, `list`, `clean`, `config`) — coming next.
+### Run a branch
+
+```bash
+peel run feature/x dev      # spin up feature/x in a worktree, run dev
+peel run feature/x build    # build mode
+peel run                    # interactive: pick branch + mode
+peel run feature/x dev -k   # --keep: don't remove the worktree on exit
+peel run --port 4200        # override the base port
+peel run --no-fetch         # skip the initial git fetch
+```
+
+What happens on `peel run`:
+
+1. Loads `.peel.yml`. Bails if missing.
+2. `git fetch --prune` (best-effort; survives offline).
+3. Lists branches; prompts if no branch given.
+4. Verifies the port. `fixed` strategy fails fast with a friendly error pointing at the holding PID. `auto-find` walks the next 20 ports.
+5. Creates a `git worktree` at `<baseDir>/<repoName>-<slug(branch)>`.
+6. Copies the configured env files (skips files that already exist at the destination).
+7. Runs the install command (skipped on `--keep` reuse if `node_modules` exists).
+8. Runs configured pre-run hooks sequentially. Stops on first failure with a friendly error.
+9. Spawns the dev/build command with stdio inherited.
+10. On exit (clean or Ctrl+C), removes the worktree unless `--keep` is set.
+
+Other subcommands (`list`, `clean`, `config`) — coming next.
 
 ## Development
 
