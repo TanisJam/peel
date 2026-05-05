@@ -1,5 +1,17 @@
 # @tanisjam/peel
 
+## 0.1.1
+
+### Patch Changes
+
+- Polish patch based on first-user feedback on 0.1.0.
+
+  - Wizard now shows the default value as a placeholder in every text prompt — no more empty boxes; press Enter and you get the visible default. Pre-run hooks shows `(none)`.
+  - After `peel init` succeeds, a "Next steps" block prints concrete examples: `peel run feature/x dev`, `peel list`, plus a fallback hint for users who hit `command not found: peel` after an `npx`-only init. The message tailors to whether you invoked via npx or a global install.
+  - README install section updated to recommend `npm install -g @tanisjam/peel` and clarify the npx alternative.
+  - Default banner drops the "coming soon" placeholder-era wording.
+  - `package.json` bin path normalized (`./dist/index.js` → `dist/index.js`); npm no longer emits the "script name was cleaned" warning at publish time.
+
 ## 0.1.0
 
 ### Minor Changes
