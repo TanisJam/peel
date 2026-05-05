@@ -4,40 +4,41 @@ context: |
   Peel is a standalone Node CLI that automates ephemeral git worktrees with
   auto-managed dev servers (see peel-cli-prd.md for full PRD).
 
-  Current state: placeholder package only — bin/peel.mjs prints "coming soon".
-  Published as @tanisjam/peel on npm; repo public at github.com/TanisJam/peel.
+  Stack (installed):
+  - TypeScript strict + NodeNext (tsconfig.json, tsc only for --noEmit)
+  - Build: tsup → ESM bundle, target node20, sourcemaps on, no dts
+  - Tests: vitest 2.x with workspace projects (unit + integration)
+  - Lint+format: Biome 1.9
+  - Release: Changesets (access:public, baseBranch:main)
+  - CI: GitHub Actions matrix Node 20+22 × ubuntu+macos
 
-  Planned stack (to be installed during implementation):
-  - TypeScript strict, ESM, target Node 20+
-  - Build: tsup
-  - Tests: vitest
-  - CLI: commander + @clack/prompts + fuzzysort + picocolors + execa
-  - Config: zod + yaml
-  - Distribution: npm scoped package, bin "peel"
+  Published as @tanisjam/peel on npm (placeholder 0.0.1).
+  Repo public at github.com/TanisJam/peel.
 
-strict_tdd: false
+strict_tdd: true
 
 testing:
   detected_at: 2026-05-04
-  strict_tdd_reason: "No test runner installed yet — placeholder package."
+  strict_tdd_reason: "vitest installed; full toolchain landed via PR #1."
   test_runner:
-    command: null
-    framework: null
+    command: "npm test"
+    framework: vitest
   layers:
-    unit: { available: false, tool: null }
-    integration: { available: false, tool: null }
-    e2e: { available: false, tool: null }
+    unit:        { available: true,  tool: vitest }
+    integration: { available: true,  tool: "vitest + node:child_process (real I/O)" }
+    e2e:         { available: false, tool: null }
   coverage:
     available: false
     command: null
+    notes: "vitest can do --coverage but @vitest/coverage-v8 is not installed yet. Add it when coverage gates are needed."
   quality:
-    linter: { available: false, command: null }
-    type_checker: { available: false, command: null }
-    formatter: { available: false, command: null }
+    linter:       { available: true, command: "npm run lint" }
+    type_checker: { available: true, command: "npm run typecheck" }
+    formatter:    { available: true, command: "npm run format" }
   notes: |
-    Re-run /sdd-init after the toolchain is installed (vitest, tsc, eslint/biome).
-    Once vitest is in package.json devDependencies, strict_tdd should flip to true
-    and downstream sdd-apply / sdd-verify will enforce the strict TDD loop.
+    Run unit-only: `npm run test:unit`. Integration only: `npm run test:integration`.
+    Integration tests MUST hit real git (not mocks) per PRD §11 — use tmp-promise + real `git init`.
+    Strict TDD is now active: every sdd-apply task that ships behavior must follow the RED → GREEN → REFACTOR cycle.
 
 rules:
   proposal:
@@ -53,13 +54,16 @@ rules:
     - Group tasks by phase (infrastructure, implementation, testing)
     - Use hierarchical numbering (1.1, 1.2, etc.)
     - Keep tasks small enough to complete in one session
+    - Under Strict TDD: each behavior task must split into RED (failing test) → GREEN (implementation) → REFACTOR
   apply:
     - Follow existing code patterns and conventions
     - Load relevant coding skills for the project stack
     - All TypeScript modules MUST be ESM ("type": "module")
-    - Strict TypeScript (strict, noUncheckedIndexedAccess)
+    - Strict TypeScript (strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes, verbatimModuleSyntax)
+    - Strict TDD: write the failing test FIRST, watch it fail, then implement
   verify:
-    - Run tests if test infrastructure exists
-    - Compare implementation against every spec scenario
+    - Run tests, typecheck, lint, build — all must pass
+    - Compare implementation against every spec scenario via the Spec Compliance Matrix
+    - Under Strict TDD: produce TDD Cycle Evidence (RED → GREEN → REFACTOR per task)
   archive:
     - Warn before merging destructive deltas (large removals)
