@@ -24,22 +24,22 @@
 
 > Run only AFTER maintainer reports `npm publish --access public` succeeded.
 
-- [ ] 3.1 Sync local: `git checkout main && git pull --ff-only`.
-- [ ] 3.2 Verify the tag does not yet exist: `git tag -l v0.1.0` is empty.
-- [ ] 3.3 Create annotated tag: `git tag -a v0.1.0 -m "v0.1.0 — first MVP release"`.
-- [ ] 3.4 Push the tag: `git push origin v0.1.0`.
-- [ ] 3.5 Extract the 0.1.0 section of CHANGELOG.md into a temp file (skip the trailing `## ` of the next entry if any).
-- [ ] 3.6 Create GitHub release: `gh release create v0.1.0 --title "v0.1.0" --notes-file <tempfile>`.
-- [ ] 3.7 Confirm release URL is reachable: `gh release view v0.1.0 --web` (or `--json url`).
+- [x] 3.1 Sync local: `git checkout main && git pull --ff-only`.
+- [x] 3.2 Verify the tag does not yet exist: `git tag -l v0.1.0` is empty.
+- [x] 3.3 Create annotated tag: `git tag -a v0.1.0 -m "v0.1.0 — first MVP release"`.
+- [x] 3.4 Push the tag: `git push origin v0.1.0`.
+- [x] 3.5 Extract the 0.1.0 section of CHANGELOG.md into a temp file (skip the trailing `## ` of the next entry if any).
+- [x] 3.6 Create GitHub release: `gh release create v0.1.0 --title "v0.1.0" --notes-file <tempfile>`.
+- [x] 3.7 Confirm release URL is reachable: `gh release view v0.1.0 --web` (or `--json url`).
 
 ## Phase 4: Post-publish smoke
 
-- [ ] 4.1 In a fresh shell (or `npx --userconfig /tmp/_npmrc` to bypass cache), run `npx -y @tanisjam/peel@0.1.0 --version`. Assert stdout is `0.1.0`.
-- [ ] 4.2 Confirm `npm view @tanisjam/peel@0.1.0 version` returns `0.1.0`.
+- [x] 4.1 In a fresh shell (or `npx --userconfig /tmp/_npmrc` to bypass cache), run `npx -y @tanisjam/peel@0.1.0 --version`. Assert stdout is `0.1.0`.
+- [x] 4.2 Confirm `npm view @tanisjam/peel@0.1.0 version` returns `0.1.0`.
 
 ## Phase 5: Final review
 
-- [ ] 5.1 README intro reads cleanly without the "Work in progress" wording.
-- [ ] 5.2 CHANGELOG.md has the 0.1.0 entry with the changeset's bullet list.
-- [ ] 5.3 GitHub release page displays the same content.
-- [ ] 5.4 No leftover `.changeset/release-0-1-0.md` (consumed).
+- [x] 5.1 README intro reads cleanly without the "Work in progress" wording.
+- [x] 5.2 CHANGELOG.md has the 0.1.0 entry with the changeset's bullet list.
+- [x] 5.3 GitHub release page displays the same content.
+- [x] 5.4 No leftover `.changeset/release-0-1-0.md` (consumed).
