@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import * as clack from "@clack/prompts";
 import { Command } from "commander";
+import { runCleanCommand } from "./commands/clean.js";
 import { PeelInitError, runInitCommand } from "./commands/init.js";
+import { runListCommand } from "./commands/list.js";
 import { runCommand } from "./commands/run.js";
 import { formatError } from "./ui/banner.js";
 import { ClackPrompter } from "./ui/clack-prompter.js";
@@ -83,6 +85,67 @@ program
       yes: opts.yes,
     });
 
+    if (result.message) {
+      if (result.exitCode === 0) {
+        console.log(result.message);
+      } else {
+        console.error(result.message);
+      }
+    }
+    process.exit(result.exitCode);
+  });
+
+program
+  .command("list")
+  .description("Show peel-managed worktrees in the current repo")
+  .action(async () => {
+    const result = await runListCommand({ cwd: process.cwd() });
+    if (result.message) {
+      if (result.exitCode === 0) {
+        console.log(result.message);
+      } else {
+        console.error(result.message);
+      }
+    }
+    process.exit(result.exitCode);
+  });
+
+type CleanOpts = {
+  all?: boolean;
+  stale?: boolean;
+  yes: boolean;
+  fetch: boolean;
+};
+
+program
+  .command("clean [branch]")
+  .description("Remove peel-managed worktrees")
+  .option("--all", "Remove all peel-managed worktrees", false)
+  .option("--stale", "Remove worktrees whose branch no longer exists", false)
+  .option("-y, --yes", "Skip confirmations", false)
+  .option("--no-fetch", "Skip the initial git fetch (stale mode)")
+  .action(async (branchArg: string | undefined, opts: CleanOpts) => {
+    const flags = [opts.all, opts.stale, branchArg !== undefined].filter(Boolean).length;
+    if (flags === 0) {
+      console.error(
+        "Specify a target: `peel clean <branch>`, `peel clean --all`, or `peel clean --stale`.",
+      );
+      process.exit(1);
+    }
+    if (flags > 1) {
+      console.error("Use only one of: <branch>, --all, --stale.");
+      process.exit(1);
+    }
+    const mode = opts.all ? "all" : opts.stale ? "stale" : "single";
+    const prompter = new ClackPrompter();
+    const result = await runCleanCommand({
+      cwd: process.cwd(),
+      prompter,
+      mode,
+      ...(branchArg !== undefined ? { branch: branchArg } : {}),
+      yes: opts.yes,
+      noFetch: !opts.fetch,
+    });
     if (result.message) {
       if (result.exitCode === 0) {
         console.log(result.message);
