@@ -16,11 +16,25 @@ peel list               # show active worktrees
 peel clean --stale      # cleanup orphans
 ```
 
+## Install
+
+```bash
+# Recommended: install globally so the `peel` command is on your PATH
+npm install -g @tanisjam/peel
+
+# Or run on demand without installing (uses npx)
+npx @tanisjam/peel <command>
+```
+
+After `npm install -g @tanisjam/peel`, `peel run feature/x dev` works directly. If you only used `npx ... init`, the bare `peel` command will not be on your PATH — keep using `npx @tanisjam/peel run ...` or install globally to drop the prefix.
+
 ## Usage
 
 ```bash
-npx @tanisjam/peel init        # interactive wizard, generates .peel.yml
-npx @tanisjam/peel init --yes  # non-interactive, uses detected defaults
+peel init                # interactive wizard, generates .peel.yml
+peel init --yes          # non-interactive, uses detected defaults
+# or, without a global install:
+npx @tanisjam/peel init
 ```
 
 The wizard auto-detects:
