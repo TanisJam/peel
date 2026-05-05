@@ -57,7 +57,28 @@ What happens on `peel run`:
 9. Spawns the dev/build command with stdio inherited.
 10. On exit (clean or Ctrl+C), removes the worktree unless `--keep` is set.
 
-Other subcommands (`list`, `clean`, `config`) — coming next.
+### Manage worktrees
+
+```bash
+peel list                    # show all peel-managed worktrees
+peel clean feature/x         # remove a single worktree
+peel clean --all             # remove all peel-managed worktrees (with confirmation)
+peel clean --all --yes       # same, no prompt
+peel clean --stale           # remove worktrees whose branch no longer exists locally or remotely
+```
+
+`peel list` shows branch, path, age, and status. Status is `running` when a `peel.lock`
+file in the worktree points at a live PID, `idle` otherwise.
+
+`peel clean` defaults to safe behavior: bulk modes (`--all`, `--stale`) skip running
+worktrees and report them in the summary. Single-target `peel clean <branch>` warns
+but proceeds — explicit user intent.
+
+The `--stale` mode runs a best-effort `git fetch` first (unless `--no-fetch` is passed
+or `git.fetchOnStart: false` in `.peel.yml`); on fetch failure it computes staleness
+from the local view and prints a warning.
+
+`peel config` — coming next.
 
 ## Development
 
