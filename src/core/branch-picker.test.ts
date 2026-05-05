@@ -40,14 +40,14 @@ describe("pickBranch", () => {
   });
 
   it("returns the picked branch via prompt", async () => {
-    const prompter = new FakePrompter().script([{ kind: "select", value: "main" }]);
+    const prompter = new FakePrompter().script([{ kind: "autocomplete", value: "main" }]);
     const result = await pickBranch({ prompter, branches: sampleBranches });
     expect(result).toBe("main");
-    expect(prompter.transcript[0]?.kind).toBe("select");
+    expect(prompter.transcript[0]?.kind).toBe("autocomplete");
   });
 
   it("returns null when the user cancels the prompt", async () => {
-    const prompter = new FakePrompter().script([{ kind: "select", value: CANCEL }]);
+    const prompter = new FakePrompter().script([{ kind: "autocomplete", value: CANCEL }]);
     const result = await pickBranch({ prompter, branches: sampleBranches });
     expect(result).toBeNull();
   });

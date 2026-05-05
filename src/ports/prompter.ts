@@ -3,6 +3,12 @@ export type Cancel = typeof CANCEL;
 
 export type SelectOption<T extends string> = { value: T; label: string };
 
+export type AutocompleteOption<T extends string> = {
+  value: T;
+  label: string;
+  hint?: string;
+};
+
 export interface Prompter {
   intro(message: string): void;
   outro(message: string): void;
@@ -30,6 +36,13 @@ export interface Prompter {
     message: string;
     initialValue?: boolean;
   }): Promise<boolean | Cancel>;
+
+  autocomplete<T extends string>(opts: {
+    message: string;
+    options: AutocompleteOption<T>[];
+    initialValue?: T;
+    placeholder?: string;
+  }): Promise<T | Cancel>;
 }
 
 export function isCancel(value: unknown): value is Cancel {

@@ -38,7 +38,7 @@ The output `.peel.yml` is **minimal**: only fields that differ from the canonica
 ```bash
 peel run feature/x dev      # spin up feature/x in a worktree, run dev
 peel run feature/x build    # build mode
-peel run                    # interactive: pick branch + mode
+peel run                    # interactive: type-to-filter branch picker, then pick mode
 peel run feature/x dev -k   # --keep: don't remove the worktree on exit
 peel run --port 4200        # override the base port
 peel run --no-fetch         # skip the initial git fetch

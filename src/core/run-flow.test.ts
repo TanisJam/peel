@@ -174,7 +174,7 @@ describe("runFlow", () => {
     const { deps, ops } = await makeDeps(
       { yes: false },
       {
-        promptScript: [{ kind: "select", value: CANCEL }],
+        promptScript: [{ kind: "autocomplete", value: CANCEL }],
         spawnScript: [],
       },
     );

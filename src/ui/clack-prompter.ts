@@ -1,5 +1,11 @@
 import * as clack from "@clack/prompts";
-import { CANCEL, type Cancel, type Prompter, type SelectOption } from "../ports/prompter.js";
+import {
+  type AutocompleteOption,
+  CANCEL,
+  type Cancel,
+  type Prompter,
+  type SelectOption,
+} from "../ports/prompter.js";
 
 const toCancel = <T>(value: T | symbol): T | Cancel =>
   clack.isCancel(value) ? CANCEL : (value as T);
@@ -65,5 +71,21 @@ export class ClackPrompter implements Prompter {
       ...(opts.initialValue !== undefined ? { initialValue: opts.initialValue } : {}),
     });
     return toCancel(result as boolean | symbol);
+  }
+
+  async autocomplete<T extends string>(opts: {
+    message: string;
+    options: AutocompleteOption<T>[];
+    initialValue?: T;
+    placeholder?: string;
+  }): Promise<T | Cancel> {
+    type ClackAutocompleteOptions = Parameters<typeof clack.autocomplete<T>>[0]["options"];
+    const result = await clack.autocomplete({
+      message: opts.message,
+      options: opts.options as unknown as ClackAutocompleteOptions,
+      ...(opts.initialValue !== undefined ? { initialValue: opts.initialValue } : {}),
+      ...(opts.placeholder !== undefined ? { placeholder: opts.placeholder } : {}),
+    });
+    return toCancel(result as T | symbol);
   }
 }

@@ -55,9 +55,9 @@ export async function pickBranch(args: PickBranchArgs): Promise<string | null> {
     );
   }
 
-  // TODO: replace with fuzzy autocomplete when clack adds one or via fuzzysort
-  const choice = await args.prompter.select({
-    message: "Pick a branch",
+  const choice = await args.prompter.autocomplete({
+    message: "Pick a branch (type to filter)",
+    placeholder: "Type to filter…",
     options: args.branches.map((b) => ({
       value: b.name,
       label: b.isRemote ? `${b.name} (origin)` : b.name,
