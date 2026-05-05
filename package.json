@@ -1,7 +1,7 @@
 {
   "name": "@tanisjam/peel",
-  "version": "0.0.1",
-  "description": "Ephemeral git worktrees with auto-managed dev servers. Work in progress.",
+  "version": "0.1.0",
+  "description": "Ephemeral git worktrees with auto-managed dev servers. Spin up any branch with its own node_modules, env, and free port — and tear it all down on Ctrl+C.",
   "type": "module",
   "bin": {
     "peel": "./dist/index.js"
