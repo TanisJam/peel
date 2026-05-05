@@ -1,7 +1,8 @@
-import { existsSync, statSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { writeConfig } from "../core/config-write.js";
 import { detectEnvFiles, detectPackageManager, detectScripts } from "../core/detect.js";
+import { findGitRoot } from "../core/git.js";
 import { type DetectedDefaults, buildConfigFromDetected, runWizard } from "../core/init-wizard.js";
 import type { Prompter } from "../ports/prompter.js";
 
@@ -12,25 +13,6 @@ export class PeelInitError extends Error {
   ) {
     super(message);
     this.name = "PeelInitError";
-  }
-}
-
-function findGitRoot(start: string): string | null {
-  let cur = resolve(start);
-  while (true) {
-    const candidate = join(cur, ".git");
-    if (existsSync(candidate)) {
-      try {
-        // Accept both directory (.git/) and file (worktree pointer)
-        statSync(candidate);
-        return cur;
-      } catch {
-        // ignore
-      }
-    }
-    const parent = dirname(cur);
-    if (parent === cur) return null;
-    cur = parent;
   }
 }
 
