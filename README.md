@@ -18,6 +18,32 @@ peel clean --stale      # cleanup orphans
 
 Stay tuned.
 
+## Development
+
+Prerequisites: Node ≥ 20, npm.
+
+```bash
+npm install         # install deps
+npm run dev         # tsup watch mode
+npm run build       # produces dist/index.js
+npm test            # vitest: unit + integration
+npm run test:unit   # unit only
+npm run test:integration  # integration only (slower; spawns the built binary)
+npm run lint        # biome check
+npm run lint:fix    # biome check --write
+npm run typecheck   # tsc --noEmit
+```
+
+### Releases
+
+Releases use [Changesets](https://github.com/changesets/changesets):
+
+```bash
+npx changeset       # add a changeset describing your change
+# ...PR + merge to main, then:
+npm run release     # changeset publish (CI or maintainer)
+```
+
 ## License
 
 MIT

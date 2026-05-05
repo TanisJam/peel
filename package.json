@@ -4,11 +4,9 @@
   "description": "Ephemeral git worktrees with auto-managed dev servers. Work in progress.",
   "type": "module",
   "bin": {
-    "peel": "./bin/peel.mjs"
+    "peel": "./dist/index.js"
   },
-  "files": [
-    "bin"
-  ],
+  "files": ["dist"],
   "engines": {
     "node": ">=20"
   },
@@ -17,12 +15,27 @@
   "publishConfig": {
     "access": "public"
   },
-  "keywords": [
-    "cli",
-    "git",
-    "worktree",
-    "dev-server",
-    "branch",
-    "qa"
-  ]
+  "keywords": ["cli", "git", "worktree", "dev-server", "branch", "qa"],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.31.0",
+    "@types/node": "^20.19.39",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
+  }
 }
