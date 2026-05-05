@@ -18,6 +18,23 @@ peel clean --stale      # cleanup orphans
 
 Stay tuned.
 
+## Usage (current)
+
+```bash
+npx @tanisjam/peel init        # interactive wizard, generates .peel.yml
+npx @tanisjam/peel init --yes  # non-interactive, uses detected defaults
+```
+
+The wizard auto-detects:
+
+- **Package manager** — picks the lockfile present (`pnpm-lock.yaml` > `bun.lock` > `yarn.lock` > `package-lock.json`); honors Corepack's `packageManager` field if set.
+- **Env files** — every `.env*` in the repo root (excluding `*.example` and `*.sample`).
+- **Scripts** — `dev`, `build`, and `start` from your `package.json`.
+
+The output `.peel.yml` is **minimal**: only fields that differ from the canonical defaults are written. Two runs over the same answers produce byte-identical files.
+
+Other subcommands (`run`, `list`, `clean`, `config`) — coming next.
+
 ## Development
 
 Prerequisites: Node ≥ 20, npm.

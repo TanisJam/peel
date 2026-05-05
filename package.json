@@ -34,8 +34,16 @@
     "@biomejs/biome": "^1.9.4",
     "@changesets/cli": "^2.31.0",
     "@types/node": "^20.19.39",
+    "@types/tmp": "^0.2.6",
+    "tmp-promise": "^3.0.3",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^2.1.9"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.3.0",
+    "commander": "^14.0.3",
+    "yaml": "^2.8.4",
+    "zod": "^4.4.3"
   }
 }
