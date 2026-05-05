@@ -2,6 +2,7 @@
 import * as clack from "@clack/prompts";
 import { Command } from "commander";
 import { runCleanCommand } from "./commands/clean.js";
+import { runConfigEdit, runConfigPath, runConfigShow } from "./commands/config.js";
 import { PeelInitError, runInitCommand } from "./commands/init.js";
 import { runListCommand } from "./commands/list.js";
 import { runCommand } from "./commands/run.js";
@@ -146,6 +147,54 @@ program
       yes: opts.yes,
       noFetch: !opts.fetch,
     });
+    if (result.message) {
+      if (result.exitCode === 0) {
+        console.log(result.message);
+      } else {
+        console.error(result.message);
+      }
+    }
+    process.exit(result.exitCode);
+  });
+
+const configCmd = program.command("config").description("Inspect or edit .peel.yml");
+
+configCmd
+  .command("show")
+  .description("Print the merged config as YAML")
+  .action(async () => {
+    const result = await runConfigShow({ cwd: process.cwd() });
+    if (result.message) {
+      if (result.exitCode === 0) {
+        console.log(result.message);
+      } else {
+        console.error(result.message);
+      }
+    }
+    process.exit(result.exitCode);
+  });
+
+configCmd
+  .command("path")
+  .description("Print the absolute path of .peel.yml")
+  .action(async () => {
+    const result = await runConfigPath({ cwd: process.cwd() });
+    if (result.message) {
+      if (result.exitCode === 0) {
+        console.log(result.message);
+      } else {
+        console.error(result.message);
+      }
+    }
+    process.exit(result.exitCode);
+  });
+
+configCmd
+  .command("edit")
+  .description("Open .peel.yml in $VISUAL or $EDITOR")
+  .action(async () => {
+    const runner = new ExecaRunner();
+    const result = await runConfigEdit({ cwd: process.cwd(), runner });
     if (result.message) {
       if (result.exitCode === 0) {
         console.log(result.message);

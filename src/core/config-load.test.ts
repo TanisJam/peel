@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { dir } from "tmp-promise";
 import { afterEach, describe, expect, it } from "vitest";
 import { DEFAULT_CONFIG } from "./config-defaults.js";
-import { PeelConfigError, loadConfig } from "./config-load.js";
+import { PeelConfigError, findConfigPath, loadConfig } from "./config-load.js";
 
 type Cleanup = () => Promise<void>;
 const cleanups: Cleanup[] = [];
@@ -82,5 +82,28 @@ describe("loadConfig", () => {
       expect((err as PeelConfigError).kind).toBe("malformed-yaml");
       expect((err as PeelConfigError).message).toContain(".peel.yml");
     }
+  });
+});
+
+describe("findConfigPath", () => {
+  it("returns the absolute path when .peel.yml is in cwd", async () => {
+    const cwd = await tmpRepo();
+    writeFileSync(join(cwd, ".peel.yml"), "");
+    const result = findConfigPath(cwd);
+    expect(result).toBe(join(cwd, ".peel.yml"));
+  });
+
+  it("walks up to the git root to find .peel.yml", async () => {
+    const root = await tmpRepo();
+    const sub = join(root, "packages", "ui");
+    mkdirSync(sub, { recursive: true });
+    writeFileSync(join(root, ".peel.yml"), "");
+    const result = findConfigPath(sub);
+    expect(result).toBe(join(root, ".peel.yml"));
+  });
+
+  it("returns null when no .peel.yml is found", async () => {
+    const cwd = await tmpRepo();
+    expect(findConfigPath(cwd)).toBeNull();
   });
 });

@@ -38,7 +38,7 @@ function findGitRootLocal(start: string): string | null {
   }
 }
 
-function findConfigPath(cwd: string): string | null {
+export function findConfigPath(cwd: string): string | null {
   const cwdResolved = resolve(cwd);
   const direct = join(cwdResolved, CONFIG_FILE);
   if (existsSync(direct)) return direct;
