@@ -1,0 +1,65 @@
+schema: spec-driven
+
+context: |
+  Peel is a standalone Node CLI that automates ephemeral git worktrees with
+  auto-managed dev servers (see peel-cli-prd.md for full PRD).
+
+  Current state: placeholder package only — bin/peel.mjs prints "coming soon".
+  Published as @tanisjam/peel on npm; repo public at github.com/TanisJam/peel.
+
+  Planned stack (to be installed during implementation):
+  - TypeScript strict, ESM, target Node 20+
+  - Build: tsup
+  - Tests: vitest
+  - CLI: commander + @clack/prompts + fuzzysort + picocolors + execa
+  - Config: zod + yaml
+  - Distribution: npm scoped package, bin "peel"
+
+strict_tdd: false
+
+testing:
+  detected_at: 2026-05-04
+  strict_tdd_reason: "No test runner installed yet — placeholder package."
+  test_runner:
+    command: null
+    framework: null
+  layers:
+    unit: { available: false, tool: null }
+    integration: { available: false, tool: null }
+    e2e: { available: false, tool: null }
+  coverage:
+    available: false
+    command: null
+  quality:
+    linter: { available: false, command: null }
+    type_checker: { available: false, command: null }
+    formatter: { available: false, command: null }
+  notes: |
+    Re-run /sdd-init after the toolchain is installed (vitest, tsc, eslint/biome).
+    Once vitest is in package.json devDependencies, strict_tdd should flip to true
+    and downstream sdd-apply / sdd-verify will enforce the strict TDD loop.
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Identify affected modules/packages
+  specs:
+    - Use Given/When/Then format for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group tasks by phase (infrastructure, implementation, testing)
+    - Use hierarchical numbering (1.1, 1.2, etc.)
+    - Keep tasks small enough to complete in one session
+  apply:
+    - Follow existing code patterns and conventions
+    - Load relevant coding skills for the project stack
+    - All TypeScript modules MUST be ESM ("type": "module")
+    - Strict TypeScript (strict, noUncheckedIndexedAccess)
+  verify:
+    - Run tests if test infrastructure exists
+    - Compare implementation against every spec scenario
+  archive:
+    - Warn before merging destructive deltas (large removals)
