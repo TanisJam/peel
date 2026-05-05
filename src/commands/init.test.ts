@@ -4,7 +4,7 @@ import { dir } from "tmp-promise";
 import { afterEach, describe, expect, it } from "vitest";
 import { FakePrompter, type ScriptStep } from "../core/__fixtures__/fake-prompter.js";
 import { ConfigSchema } from "../core/config-schema.js";
-import { runInitCommand } from "./init.js";
+import { detectInitInvocation, nextStepsMessage, runInitCommand } from "./init.js";
 
 type Cleanup = () => Promise<void>;
 const cleanups: Cleanup[] = [];
@@ -132,5 +132,42 @@ describe("runInitCommand", () => {
       },
     };
     expect(() => ConfigSchema.parse(merged)).not.toThrow();
+  });
+});
+
+describe("detectInitInvocation", () => {
+  it("returns 'npx' when npm_command=exec", () => {
+    expect(detectInitInvocation({ npm_command: "exec" })).toBe("npx");
+  });
+
+  it("returns 'npx' when npm_lifecycle_event=npx", () => {
+    expect(detectInitInvocation({ npm_lifecycle_event: "npx" })).toBe("npx");
+  });
+
+  it("returns 'global' when no npm-exec markers are present", () => {
+    expect(detectInitInvocation({})).toBe("global");
+    expect(detectInitInvocation({ npm_command: "install" })).toBe("global");
+  });
+});
+
+describe("nextStepsMessage", () => {
+  it("npx variant suggests `npx @tanisjam/peel run` and offers global install", () => {
+    const msg = nextStepsMessage("npx");
+    expect(msg).toContain("Wrote .peel.yml");
+    expect(msg).toContain("npx @tanisjam/peel run");
+    expect(msg).toContain("npm install -g @tanisjam/peel");
+  });
+
+  it("global variant uses the bare `peel` command and includes a fallback hint", () => {
+    const msg = nextStepsMessage("global");
+    expect(msg).toContain("peel run feature/x dev");
+    expect(msg).toContain("peel list");
+    // Fallback hint for users who haven't installed globally yet:
+    expect(msg).toContain("npm install -g @tanisjam/peel");
+  });
+
+  it("both variants concretely show a runnable example branch+mode", () => {
+    expect(nextStepsMessage("npx")).toMatch(/feature\/x\s+dev/);
+    expect(nextStepsMessage("global")).toMatch(/feature\/x\s+dev/);
   });
 });

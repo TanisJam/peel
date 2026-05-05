@@ -3,7 +3,12 @@ import * as clack from "@clack/prompts";
 import { Command } from "commander";
 import { runCleanCommand } from "./commands/clean.js";
 import { runConfigEdit, runConfigPath, runConfigShow } from "./commands/config.js";
-import { PeelInitError, runInitCommand } from "./commands/init.js";
+import {
+  PeelInitError,
+  detectInitInvocation,
+  nextStepsMessage,
+  runInitCommand,
+} from "./commands/init.js";
 import { runListCommand } from "./commands/list.js";
 import { runCommand } from "./commands/run.js";
 import { formatError } from "./ui/banner.js";
@@ -31,8 +36,11 @@ program
         prompter.intro("peel init");
       }
       await runInitCommand({ cwd: process.cwd(), prompter, yes: opts.yes });
+      const message = nextStepsMessage(detectInitInvocation());
       if (!opts.yes) {
-        prompter.outro("Wrote .peel.yml — peel is ready.");
+        prompter.outro(message);
+      } else {
+        console.log(message);
       }
     } catch (err) {
       if (err instanceof PeelInitError) {
@@ -206,11 +214,12 @@ configCmd
   });
 
 program.action(() => {
-  console.log(`peel v${VERSION} — coming soon.`);
+  console.log(`peel v${VERSION}`);
   console.log(
     "Spin up any branch in an isolated git worktree, with its own node_modules, env, and port.",
   );
   console.log("\nRun `peel init` to get started, then `peel run <branch> <mode>` to launch.");
+  console.log("Run `peel --help` to see all commands.");
 });
 
 await program.parseAsync(process.argv);

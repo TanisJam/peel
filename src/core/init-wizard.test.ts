@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { CANCEL } from "../ports/prompter.js";
 import { FakePrompter, type ScriptStep } from "./__fixtures__/fake-prompter.js";
 import { ConfigSchema } from "./config-schema.js";
@@ -117,5 +117,29 @@ describe("runWizard", () => {
     ]);
     const cfg = await runWizard({ prompter, detected, existingConfig: false });
     expect(cfg?.preRun).toEqual(["pnpm prisma generate", "pnpm db:migrate"]);
+  });
+
+  it("passes placeholder + defaultValue to every text prompt so users see what Enter accepts", async () => {
+    const prompter = new FakePrompter().script(happyPathScript);
+    const textSpy = vi.spyOn(prompter, "text");
+    await runWizard({ prompter, detected, existingConfig: false });
+
+    // Every text prompt must show a non-empty placeholder OR explicitly state
+    // "(none)" — never undefined or empty string. defaultValue must match
+    // the placeholder so hitting Enter accepts what was shown.
+    for (const call of textSpy.mock.calls) {
+      const [opts] = call;
+      const placeholder = (opts as { placeholder?: string }).placeholder;
+      const defaultValue = (opts as { defaultValue?: string }).defaultValue;
+      expect(placeholder, `text prompt missing placeholder: ${opts.message}`).toBeDefined();
+      expect(placeholder?.length).toBeGreaterThan(0);
+      // defaultValue may be empty for the optional pre-run hooks prompt; in
+      // that case the placeholder shows "(none)" so the user sees the intent.
+      if (defaultValue === "") {
+        expect(placeholder).toMatch(/none/i);
+      } else {
+        expect(defaultValue).toBe(placeholder);
+      }
+    }
   });
 });

@@ -101,6 +101,7 @@ export async function runWizard(args: RunWizardArgs): Promise<Config | null> {
 
   const portRaw = await prompter.text({
     message: "Base port",
+    placeholder: String(seed.port.base),
     defaultValue: String(seed.port.base),
   });
   if (isCancel(portRaw)) return null;
@@ -125,38 +126,48 @@ export async function runWizard(args: RunWizardArgs): Promise<Config | null> {
   });
   if (isCancel(pm)) return null;
 
+  const installDefault = PM_INSTALL[pm];
   const install = await prompter.text({
     message: "Install command",
-    defaultValue: PM_INSTALL[pm],
+    placeholder: installDefault,
+    defaultValue: installDefault,
   });
   if (isCancel(install)) return null;
 
+  const devDefault = detected.scripts.dev ?? defaultDev(pm);
   const dev = await prompter.text({
     message: "Dev command",
-    defaultValue: detected.scripts.dev ?? defaultDev(pm),
+    placeholder: devDefault,
+    defaultValue: devDefault,
   });
   if (isCancel(dev)) return null;
 
+  const buildDefault = detected.scripts.build ?? defaultBuild(pm);
   const build = await prompter.text({
     message: "Build command",
-    defaultValue: detected.scripts.build ?? defaultBuild(pm),
+    placeholder: buildDefault,
+    defaultValue: buildDefault,
   });
   if (isCancel(build)) return null;
 
+  const startDefault = detected.scripts.start ?? defaultStart(pm);
   const start = await prompter.text({
     message: "Start command",
-    defaultValue: detected.scripts.start ?? defaultStart(pm),
+    placeholder: startDefault,
+    defaultValue: startDefault,
   });
   if (isCancel(start)) return null;
 
   const preRunRaw = await prompter.text({
     message: "Pre-run hooks (one per line, leave empty for none)",
+    placeholder: "(none)",
     defaultValue: "",
   });
   if (isCancel(preRunRaw)) return null;
 
   const baseDir = await prompter.text({
     message: "Worktree base directory (relative to repo)",
+    placeholder: seed.worktree.baseDir,
     defaultValue: seed.worktree.baseDir,
   });
   if (isCancel(baseDir)) return null;

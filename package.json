@@ -4,7 +4,7 @@
   "description": "Ephemeral git worktrees with auto-managed dev servers. Spin up any branch with its own node_modules, env, and free port — and tear it all down on Ctrl+C.",
   "type": "module",
   "bin": {
-    "peel": "./dist/index.js"
+    "peel": "dist/index.js"
   },
   "files": ["dist"],
   "engines": {
