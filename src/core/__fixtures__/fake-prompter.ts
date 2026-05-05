@@ -1,11 +1,12 @@
-import type { Cancel, Prompter, SelectOption } from "../../ports/prompter.js";
+import type { AutocompleteOption, Cancel, Prompter, SelectOption } from "../../ports/prompter.js";
 import { CANCEL } from "../../ports/prompter.js";
 
 export type ScriptStep =
   | { kind: "text"; value: string | Cancel }
   | { kind: "select"; value: string | Cancel }
   | { kind: "multiselect"; value: string[] | Cancel }
-  | { kind: "confirm"; value: boolean | Cancel };
+  | { kind: "confirm"; value: boolean | Cancel }
+  | { kind: "autocomplete"; value: string | Cancel };
 
 export class FakePrompter implements Prompter {
   private steps: ScriptStep[] = [];
@@ -60,6 +61,13 @@ export class FakePrompter implements Prompter {
 
   async confirm(opts: { message: string }): Promise<boolean | Cancel> {
     return this.next("confirm", opts.message) as boolean | Cancel;
+  }
+
+  async autocomplete<T extends string>(opts: {
+    message: string;
+    options: AutocompleteOption<T>[];
+  }): Promise<T | Cancel> {
+    return this.next("autocomplete", opts.message) as T | Cancel;
   }
 }
 

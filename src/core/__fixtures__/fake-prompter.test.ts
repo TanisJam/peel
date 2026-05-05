@@ -29,6 +29,34 @@ describe("FakePrompter", () => {
     expect(isCancel(result)).toBe(true);
   });
 
+  it("returns the scripted autocomplete value", async () => {
+    const p = new FakePrompter().script([{ kind: "autocomplete", value: "feature/x" }]);
+    const result = await p.autocomplete({
+      message: "Pick a branch",
+      options: [
+        { value: "feature/x", label: "feature/x" },
+        { value: "feature/y", label: "feature/y" },
+      ],
+    });
+    expect(result).toBe("feature/x");
+  });
+
+  it("throws on autocomplete kind mismatch", async () => {
+    const p = new FakePrompter().script([{ kind: "select", value: "x" }]);
+    await expect(
+      p.autocomplete({ message: "m", options: [{ value: "x", label: "x" }] }),
+    ).rejects.toThrow(/mismatch/);
+  });
+
+  it("propagates the cancel sentinel from autocomplete", async () => {
+    const p = new FakePrompter().script([{ kind: "autocomplete", value: CANCEL }]);
+    const result = await p.autocomplete({
+      message: "m",
+      options: [{ value: "x", label: "x" }],
+    });
+    expect(isCancel(result)).toBe(true);
+  });
+
   it("records a transcript and intro/outro calls", async () => {
     const p = new FakePrompter().script([{ kind: "text", value: "v" }]);
     p.intro("hi");
