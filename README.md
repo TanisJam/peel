@@ -78,7 +78,31 @@ The `--stale` mode runs a best-effort `git fetch` first (unless `--no-fetch` is 
 or `git.fetchOnStart: false` in `.peel.yml`); on fetch failure it computes staleness
 from the local view and prints a warning.
 
-`peel config` — coming next.
+### Configure
+
+```bash
+peel config show     # print the merged config (defaults + overrides) as YAML
+peel config path     # print the absolute path of .peel.yml
+peel config edit     # open .peel.yml in $VISUAL or $EDITOR
+```
+
+`peel config show` prints the merged view — every field with its effective value — so
+you see exactly what `peel run` will use. To inspect the raw file, use
+`cat $(peel config path)`.
+
+`peel config path` always prints a path (the file's location, or where it would be
+created). Exit code 0 when the file exists, 1 when it does not — useful for
+scripting:
+
+```bash
+if peel config path > /dev/null 2>&1; then
+  echo "configured"
+fi
+```
+
+`peel config edit` resolves the editor as `$VISUAL`, then `$EDITOR`. It refuses to
+spawn when `.peel.yml` is missing (run `peel init` first) or when no editor is
+configured.
 
 ## Development
 
